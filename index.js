@@ -1,20 +1,23 @@
 const rover = {
     direction: 'N',
-    position: { x: 0, y: 0},
+    position: {
+        x: 0,
+        y: 0
+    },
     travelLog: []
 };
 
 const obstacles = [
-    ['','','','','','','','','x',''],
-    ['','','','','','','','','',''],
-    ['','','x','','','','','','',''],
-    ['','','','','','','','','',''],
-    ['','','','','','x','','','',''],
-    ['','','','','','','','','',''],
-    ['','','','','x','','','','',''],
-    ['','','','','','','','','',''],
-    ['','','','','','','','','',''],
-    ['x','','','','','','','','',''],
+    ['', '', '', '', '', '', '', '', 'x', ''],
+    ['', '', '', '', '', '', '', '', '', ''],
+    ['', '', 'x', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', 'x', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', 'x', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', ''],
+    ['x', '', '', '', '', '', '', '', '', ''],
 ];
 
 function turnLeft(rover) {
@@ -63,28 +66,28 @@ function moveForward(rover) {
             rover.position.x--;
             logNewPosition(rover, 'forward');
         } else {
-            console.log(`Rover can't make this move: there is an obstacle`)
-        }        
+            console.log(`Rover can't move forward: there is an obstacle`)
+        }
     } else if (rover.direction === 'E' && rover.position.x < 9) {
         if (!obstacles[rover.position.y][rover.position.x + 1]) {
             rover.position.x++;
             logNewPosition(rover, 'forward');
         } else {
-            console.log(`Rover can' make this move: there is an obstacle`)
+            console.log(`Rover can't move forward: there is an obstacle`)
         }
     } else if (rover.direction === 'N' && rover.position.y > 0) {
         if (!obstacles[rover.position.y - 1][rover.position.x]) {
             rover.position.y--;
             logNewPosition(rover, 'forward');
         } else {
-            console.log(`Rover can' make this move: there is an obstacle`)
+            console.log(`Rover can't move forward: there is an obstacle`)
         }
     } else if (rover.direction === 'S' && rover.position.y < 9) {
         if (!obstacles[rover.position.y + 1][rover.position.x]) {
             rover.position.y++;
             logNewPosition(rover, 'forward');
         } else {
-            console.log(`Rover can' make this move: there is an obstacle`)
+            console.log(`Rover can't move forward: there is an obstacle`)
         }
     } else {
         console.log(`Rover is at position (${rover.position.x}; ${rover.position.y}), facing ${rover.direction}. It can't move forward without going off the grid!`);
@@ -93,24 +96,44 @@ function moveForward(rover) {
 
 function moveBackward(rover) {
     if (rover.direction === 'W' && rover.position.x < 9) {
-        rover.position.x++;
-        logNewPosition(rover, 'backward');
+        if (!obstacles[rover.position.y][rover.position.x + 1]) {
+            rover.position.x++;
+            logNewPosition(rover, 'backward');
+        } else {
+            console.log(`Rover can't move backward: there is an obstacle`)
+        }
     } else if (rover.direction === 'E' && rover.position.x > 0) {
-        rover.position.x--;
-       logNewPosition(rover, 'backward');
+        if (!obstacles[rover.position.y][rover.position.x - 1]) {
+            rover.position.x--;
+            logNewPosition(rover, 'backward');
+        } else {
+            console.log(`Rover can't move backward: there is an obstacle`)
+        }
     } else if (rover.direction === 'N' && rover.position.y < 9) {
-        rover.position.y--;
-       logNewPosition(rover, 'backward');
+        if (!obstacles[rover.position.y + 1][rover.position.x]) {
+            rover.position.y++;
+            logNewPosition(rover, 'backward');
+        } else {
+            console.log(`Rover can't move backward: there is an obstacle`)
+        }
+
     } else if (rover.direction === 'S' && rover.position.y > 0) {
-        rover.position.y++;
-       logNewPosition(rover, 'backward');
+        if (!obstacles[rover.position.y - 1][rover.position.x]) {
+            rover.position.y--;
+            logNewPosition(rover, 'backward');
+        } else {
+            console.log(`Rover can't move backward: there is an obstacle`)
+        }
     } else {
         console.log(`Rover is at position (${rover.position.x}; ${rover.position.y}), facing ${rover.direction}. It can't move backward without going off the grid!`);
     }
 }
 
 function command(rover, commandList) {
+    console.log(`Rover's initial position is at (${rover.position.x}, ${rover.position.y}), facing ${rover.direction}.`);
+    console.log(`List of all commands received: ${commandList}.\nHere is the output of every single command:`);
     for (let i = 0; i < commandList.length; i++) {
+        console.log(`${i}. Command "${commandList[i]}":`)
         switch (commandList[i]) {
             case 'r':
                 turnRight(rover);
@@ -130,10 +153,13 @@ function command(rover, commandList) {
     }
     console.log(`Here is the history of Rover's moves: ${JSON.stringify(rover.travelLog)}`);
 }
-console.log(`Rover's initial position is at (${rover.position.x}, ${rover.position.y}), facing ${rover.direction}.`);
-command(rover,'rrffffffffflfrfrf');
+
+command(rover, 'frffferrfblffrf');
 
 function logNewPosition(rover, move) {
-    rover.travelLog.push({ x: rover.position.x, y: rover.position.y });
+    rover.travelLog.push({
+        x: rover.position.x,
+        y: rover.position.y
+    });
     console.log(`Rover has moved ${move}. His new position is (${rover.position.x}, ${rover.position.y})`);
 }
